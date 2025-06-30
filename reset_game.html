@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="cs">
 <head>
@@ -11,47 +12,48 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            font-family: 'Arial', sans-serif;
             background-color: #f0f2f5;
+            font-family: 'Arial', sans-serif;
             color: #333;
             text-align: center;
             padding: 20px;
         }
         h1 {
-            color: #e53e3e;
+            color: #28a745;
+            font-size: 2.5rem;
             margin-bottom: 20px;
         }
         p {
             font-size: 1.2rem;
-            margin-bottom: 30px;
+            color: #555;
         }
-        .action-link {
-            background-color: #4299e1;
+        .continue-link {
+            background-color: #007BFF;
             color: white;
             padding: 0.75rem 1.5rem;
             border-radius: 0.75rem;
             font-size: 1.1rem;
             font-weight: 600;
             text-decoration: none;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 30px;
+            display: inline-block;
         }
-        .action-link:hover {
-            background-color: #3182ce;
-            transform: translateY(-2px);
+        .continue-link:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
     <h1>Hra byla resetována!</h1>
-    <p>Data z předchozí hry byla vymazána. Nyní je vše připraveno pro nového hráče.</p>
-    <a href="display.html" class="action-link">Zobrazit prázdné kolonky</a>
+    <p>Všechny uložené kódy byly vymazány.</p>
+    <a href="URL_VASE_PRVNI_HADANKY_V_GENIALLY_NEBO_HLAVNI_STRANKY_GENIALLY" class="continue-link">Začít novou hru v Genially</a>
+
     <script>
-        const NUMBER_OF_FIELDS = 8;
         window.onload = function() {
-            // Vymaže všechna uložená čísla
-            localStorage.setItem('escapeRoomNumbers', JSON.stringify(Array(NUMBER_OF_FIELDS).fill(null)));
-            console.log("Všechna pole resetována.");
+            localStorage.removeItem('escapeRoomNumbers');
+            localStorage.removeItem('unlEscapeRoomNumber'); // Smazat, pokud existuje
+            localStorage.removeItem('currentSlotIndex');    // Smazat, pokud existuje
+            console.log("Local Storage byl vymazán pro novou hru.");
         };
     </script>
 </body>

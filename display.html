@@ -6,19 +6,21 @@
     <title>Zobrazení kódů</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
             display: flex;
             flex-direction: column; /* Aby bylo místo pro gratulaci */
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             background-color: #f0f2f5;
+            font-family: 'Arial', sans-serif;
+            color: #333;
             margin: 0;
+            overflow-y: auto; /* Povolit vertikální scroll pro celé tělo, pokud je potřeba */
         }
         .container {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: repeat(2, 1fr);
+            grid-template-columns: repeat(4, minmax(100px, 1fr)); /* Pevnější min-šířka, ale flexibilní */
+            grid-template-rows: repeat(2, minmax(80px, 1fr));   /* Pevnější min-výška, ale flexibilní */
             gap: 20px;
             padding: 20px;
             background-color: #ffffff;
@@ -26,32 +28,37 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             max-width: 800px;
             width: 90%;
-            margin-bottom: 20px; /* Mezera od gratulace */
+            margin-bottom: 20px;
         }
         .number-field {
             display: flex;
             justify-content: center;
             align-items: center;
             width: 100%;
-            height: 80px;
+            height: 80px; /* Pevná výška */
+            min-width: 100px; /* Pevná minimální šířka */
             background-color: #e2e8f0;
             border-radius: 8px;
             font-size: 2.5rem;
             font-weight: bold;
             color: #2d3748;
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+            /* Zajištění, že se text nepřeteče a zůstane vycentrován */
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: clip; /* Nebo 'ellipsis' pokud chcete tři tečky */
         }
         #congratulations {
             font-size: 3rem;
             font-weight: bold;
-            color: #28a745; /* Zelená pro gratulaci */
+            color: #28a745;
             margin-top: 20px;
             text-align: center;
-            display: none; /* Skryté, dokud nejsou všechna pole plná */
+            display: none;
             padding: 0 20px;
         }
         .reset-link {
-            background-color: #e53e3e; /* Červené tlačítko pro reset */
+            background-color: #e53e3e;
             color: white;
             padding: 0.75rem 1.5rem;
             border-radius: 0.75rem;
@@ -68,8 +75,8 @@
         }
         @media (max-width: 768px) {
             .container {
-                grid-template-columns: repeat(2, 1fr);
-                grid-template-rows: repeat(4, 1fr);
+                grid-template-columns: repeat(2, minmax(100px, 1fr));
+                grid-template-rows: repeat(4, minmax(80px, 1fr));
             }
             .number-field {
                 font-size: 2rem;
@@ -81,10 +88,10 @@
         @media (max-width: 480px) {
             .container {
                 grid-template-columns: 1fr;
-                grid-template-rows: repeat(8, 1fr);
+                grid-template-rows: repeat(8, minmax(60px, 1fr)); /* Upraveno pro mobil */
             }
             .number-field {
-                height: 60px;
+                height: 60px; /* Upraveno pro mobil */
                 font-size: 1.8rem;
             }
             #congratulations {
@@ -110,12 +117,6 @@
 
     <script>
         const NUMBER_OF_FIELDS = 8;
-
-        function resetAllFields() {
-             // Toto je pro resetovací stránku, ale pro jistotu to tu máme
-            localStorage.setItem('escapeRoomNumbers', JSON.stringify(Array(NUMBER_OF_FIELDS).fill(null)));
-            console.log("Všechna pole resetována.");
-        }
 
         window.onload = function() {
             let storedNumbers = JSON.parse(localStorage.getItem('escapeRoomNumbers')) || Array(NUMBER_OF_FIELDS).fill(null);

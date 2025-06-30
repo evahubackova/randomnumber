@@ -26,21 +26,11 @@
 
         /* Výchozí styly pro kontejnery a políčka (DESKTOPOVÁ VERZE - 4 SLUPOVCŮ) */
         .container {
-            display: grid;
-            grid-template-columns: repeat(4, 150px); /* 4 sloupce po 150px */
-            grid-template-rows: repeat(2, 80px);     /* 2 řádky po 80px */
-            gap: 20px;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            /* Vypočítaná pevná šířka kontejneru: (4 * 150px šířka) + (3 * 20px mezera) + (2 * 20px padding) */
-            width: calc((4 * 150px) + (3 * 20px) + (2 * 20px)); /* = 600 + 60 + 40 = 700px */
-            /* Pevná výška kontejneru: (2 * 80px výška) + (1 * 20px mezera) + (2 * 20px padding) */
-            height: calc((2 * 80px) + (1 * 20px) + (2 * 20px)); /* = 160 + 20 + 40 = 220px */
-            margin-bottom: 20px;
-            flex-shrink: 0; /* Zabrání zmenšení, pokud je málo místa */
-        }
+    grid-template-columns: repeat(4, 150px); /* Stále 4 sloupce */
+    grid-template-rows: 80px; /* Pouze jeden řádek pro 4 kódy */
+    width: calc((4 * 150px) + (3 * 20px) + (2 * 20px)); /* Šířka zůstane stejná = 700px */
+    height: calc(80px + (2 * 20px)); /* Nová výška: 80px výška pole + 2*20px padding = 120px */
+}
         .number-field {
             display: flex;
             justify-content: center;
@@ -89,12 +79,15 @@
 
         /* Tablet verze (2 sloupce) - aplikuje se, když je šířka pod 680px */
         @media (max-width: 680px) { /* Trigger point, kde se 4 sloupce nevejdou */
-            .container {
-                grid-template-columns: repeat(2, 140px); /* 2 sloupce po 140px */
-                grid-template-rows: repeat(4, 70px);    /* 4 řádky po 70px */
-                width: calc((2 * 140px) + (1 * 20px) + (2 * 20px)); /* 280 + 20 + 40 = 340px */
-                height: calc((4 * 70px) + (3 * 20px) + (2 * 20px)); /* 280 + 60 + 40 = 380px */
-            }
+           @media (max-width: 680px) {
+    .container {
+        grid-template-columns: repeat(2, 140px); /* 2 sloupce */
+        grid-template-rows: repeat(2, 70px);    /* 2 řádky */
+        width: calc((2 * 140px) + (1 * 20px) + (2 * 20px)); /* = 340px */
+        height: calc((2 * 70px) + (1 * 20px) + (2 * 20px)); /* = 140 + 20 + 40 = 200px */
+    }
+    /* .number-field styly zůstanou stejné */
+}
             .number-field {
                 width: 140px;
                 height: 70px;
@@ -107,14 +100,13 @@
 
         /* Mobilní verze (1 sloupec) - aplikuje se, když je šířka pod 350px */
         @media (max-width: 350px) {
-            .container {
-                grid-template-columns: 1fr; /* Jeden sloupec */
-                grid-template-rows: repeat(8, 60px); /* 8 řádků po 60px */
-                width: calc(100% - 40px); /* 100% šířky s paddingem */
-                max-width: 300px; /* Maximální šířka pro velmi malé mobily */
-                margin-left: auto;
-                margin-right: auto;
-            }
+    .container {
+        grid-template-columns: 1fr; /* Jeden sloupec */
+        grid-template-rows: repeat(4, 60px); /* 4 řádky po 60px */
+        /* width a max-width zůstanou stejné */
+    }
+    /* .number-field styly zůstanou stejné */
+}
             .number-field {
                 height: 60px;
                 font-size: 1.8rem;
@@ -132,17 +124,14 @@
         <div class="number-field" id="field-2"></div>
         <div class="number-field" id="field-3"></div>
         <div class="number-field" id="field-4"></div>
-        <div class="number-field" id="field-5"></div>
-        <div class="number-field" id="field-6"></div>
-        <div class="number-field" id="field-7"></div>
-        <div class="number-field" id="field-8"></div>
+       
     </div>
 
     <div id="congratulations">Gratulujeme! Všechny kódy jsi získal/a!</div>
     <a href="reset_game.html" class="reset-link" id="resetGameLink">Resetovat hru pro nového hráče</a>
 
     <script>
-        const NUMBER_OF_FIELDS = 8;
+        const NUMBER_OF_FIELDS = 4;
 
         window.onload = function() {
             let storedNumbers = JSON.parse(localStorage.getItem('escapeRoomNumbers')) || Array(NUMBER_OF_FIELDS).fill(null);

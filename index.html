@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generátor čísla pro Genially</title>
     <style>
-        /* ... (Zde budou tvé CSS styly z předchozí verze, které fungovaly v Glitchi) ... */
+        /* Vaše stávající CSS styly */
         body {
             display: flex;
             flex-direction: column;
@@ -16,7 +16,8 @@
             color: #333;
             overflow: hidden;
             width: 100%;
-            height: 100%;
+            height: 100vh;
+            margin: 0;
         }
         #randomNumberDisplay {
             font-size: 4rem;
@@ -31,10 +32,7 @@
             text-align: center;
             transition: transform 0.2s ease-in-out;
         }
-        #randomNumberDisplay:active {
-            transform: scale(0.98);
-        }
-        #generateButton {
+        #generateButton, #saveNumberButton, #resetAllButton {
             background-color: #4299e1;
             color: white;
             padding: 0.75rem 1.5rem;
@@ -45,21 +43,28 @@
             cursor: pointer;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             transition: background-color 0.3s ease, transform 0.2s ease;
+            margin: 0.5rem; /* Mezery mezi tlačítky */
         }
-        #generateButton:hover {
+        #generateButton:hover, #saveNumberButton:hover, #resetAllButton:hover {
             background-color: #3182ce;
             transform: translateY(-2px);
         }
-        #generateButton:active {
+        #generateButton:active, #saveNumberButton:active, #resetAllButton:active {
             background-color: #2c5282;
             transform: translateY(0);
+        }
+        #resetAllButton {
+            background-color: #e53e3e; /* Červené tlačítko pro reset */
+        }
+        #resetAllButton:hover {
+            background-color: #c53030;
         }
         @media (max-width: 600px) {
             #randomNumberDisplay {
                 font-size: 3rem;
                 padding: 0.75rem 1.5rem;
             }
-            #generateButton {
+            #generateButton, #saveNumberButton, #resetAllButton {
                 font-size: 1rem;
                 padding: 0.6rem 1.2rem;
             }
@@ -69,6 +74,8 @@
 <body>
     <div id="randomNumberDisplay"></div>
     <button id="generateButton">Generovat nové číslo</button>
+    <button id="saveNumberButton">Uložit do dalšího pole</button>
+    <button id="resetAllButton">Resetovat všechna pole</button>
 
     <script>
         function generateRandomNumber(min, max) {
@@ -77,29 +84,86 @@
 
         const MIN_VALUE = 1;
         const MAX_VALUE = 100;
+        const NUMBER_OF_FIELDS = 8; // Celkový počet polí
 
         const randomNumberDisplay = document.getElementById('randomNumberDisplay');
         const generateButton = document.getElementById('generateButton');
+        const saveNumberButton = document.getElementById('saveNumberButton');
+        const resetAllButton = document.getElementById('resetAllButton');
 
-        // Přejmenujeme funkci a přidáme ukládání do Local Storage
-        function updateNumberAndSave() {
-            const newNumber = generateRandomNumber(MIN_VALUE, MAX_VALUE);
-            randomNumberDisplay.innerText = newNumber;
-            // TOTO JE TEN KLÍČOVÝ ŘÁDEK, KTERÝ CHYBĚL!
-            localStorage.setItem('unlEscapeRoomNumber', newNumber);
-            console.log(`Číslo ${newNumber} uloženo do Local Storage.`); // Pro kontrolu v konzoli
+        let currentGeneratedNumber = null; // Proměnná pro uložení aktuálně vygenerovaného čísla
+
+        // Funkce pro inicializaci nebo načtení polí
+        function initializeFields() {
+            let storedNumbers = JSON.parse(localStorage.getItem('escapeRoomNumbers'));
+            if (!storedNumbers || !Array.isArray(storedNumbers) || storedNumbers.length !== NUMBER_OF_FIELDS) {
+                // Pokud nejsou pole inicializovaná nebo mají špatnou délku, vytvoříme je s null hodnotami
+                storedNumbers = Array(NUMBER_OF_FIELDS).fill(null);
+                localStorage.setItem('escapeRoomNumbers', JSON.stringify(storedNumbers));
+            }
+            // Získání indexu dalšího volného pole
+            let currentSlotIndex = storedNumbers.findIndex(slot => slot === null);
+            if (currentSlotIndex === -1) { // Pokud jsou všechna pole plná, začneme odznova (nebo můžete zvolit jinou logiku)
+                currentSlotIndex = 0;
+            }
+            localStorage.setItem('currentSlotIndex', currentSlotIndex); // Uložíme index
+            console.log("Pole inicializována. Další volný index:", currentSlotIndex);
         }
 
-        // Změníme volání funkce na updateNumberAndSave
-        // A zkontrolujeme načítání při startu
-        window.onload = function() {
-            const storedNumber = localStorage.getItem('unlEscapeRoomNumber');
-            if (storedNumber) {
-                randomNumberDisplay.innerText = storedNumber;
-            } else {
-                updateNumberAndSave(); // Pokud není číslo, vygenerujte nové a uložte
+        // Funkce pro generování čísla (pouze generuje, neukládá do slotů)
+        function generateNumber() {
+            currentGeneratedNumber = generateRandomNumber(MIN_VALUE, MAX_VALUE);
+            randomNumberDisplay.innerText = currentGeneratedNumber;
+            saveNumberButton.disabled = false; // Povolí tlačítko "Uložit" po vygenerování
+            console.log(`Vygenerováno číslo: ${currentGeneratedNumber}`);
+        }
+
+        // Funkce pro uložení vygenerovaného čísla do dalšího volného slotu
+        function saveNumberToNextSlot() {
+            if (currentGeneratedNumber === null) {
+                alert("Nejprve vygenerujte číslo!");
+                return;
             }
-            generateButton.addEventListener('click', updateNumberAndSave);
+
+            let storedNumbers = JSON.parse(localStorage.getItem('escapeRoomNumbers'));
+            let currentSlotIndex = parseInt(localStorage.getItem('currentSlotIndex'));
+
+            if (currentSlotIndex < NUMBER_OF_FIELDS) {
+                storedNumbers[currentSlotIndex] = currentGeneratedNumber;
+                localStorage.setItem('escapeRoomNumbers', JSON.stringify(storedNumbers));
+                localStorage.setItem('currentSlotIndex', currentSlotIndex + 1); // Posune index na další slot
+                console.log(`Číslo ${currentGeneratedNumber} uloženo do slotu ${currentSlotIndex}.`);
+                currentGeneratedNumber = null; // Vyčistí vygenerované číslo po uložení
+                randomNumberDisplay.innerText = "---"; // Zobrazí prázdné pole
+                saveNumberButton.disabled = true; // Zase zakáže tlačítko "Uložit"
+            } else {
+                alert("Všechna pole jsou plná! Resetujte je, pokud chcete ukládat nová čísla.");
+                saveNumberButton.disabled = true; // Zase zakáže tlačítko "Uložit"
+            }
+        }
+
+        // Funkce pro resetování všech polí
+        function resetAllFields() {
+            if (confirm("Opravdu chcete resetovat všechna pole? Tato akce je nevratná!")) {
+                localStorage.setItem('escapeRoomNumbers', JSON.stringify(Array(NUMBER_OF_FIELDS).fill(null)));
+                localStorage.setItem('currentSlotIndex', 0);
+                alert("Všechna pole byla resetována.");
+                currentGeneratedNumber = null; // Resetuje i aktuálně zobrazené číslo
+                randomNumberDisplay.innerText = "---";
+                saveNumberButton.disabled = true;
+                console.log("Všechna pole resetována.");
+            }
+        }
+
+        // Při načtení stránky
+        window.onload = function() {
+            initializeFields(); // Inicializuje pole a index
+            generateNumber(); // Automaticky vygeneruje PRVNÍ číslo (ale neuloží ho automaticky)
+            saveNumberButton.disabled = false; // Povolí tlačítko Uložit, protože číslo je vygenerováno
+
+            generateButton.addEventListener('click', generateNumber); // Tlačítko pro generování nového čísla
+            saveNumberButton.addEventListener('click', saveNumberToNextSlot); // Tlačítko pro explicitní uložení
+            resetAllButton.addEventListener('click', resetAllFields); // Tlačítko pro reset
         };
     </script>
 </body>

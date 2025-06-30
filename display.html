@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zobrazení čísel</title>
+    <title>Zobrazení kódů</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
             display: flex;
+            flex-direction: column; /* Aby bylo místo pro gratulaci */
             justify-content: center;
             align-items: center;
             min-height: 100vh;
@@ -25,6 +26,7 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             max-width: 800px;
             width: 90%;
+            margin-bottom: 20px; /* Mezera od gratulace */
         }
         .number-field {
             display: flex;
@@ -39,12 +41,40 @@
             color: #2d3748;
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
         }
+        #congratulations {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #28a745; /* Zelená pro gratulaci */
+            margin-top: 20px;
+            text-align: center;
+            display: none; /* Skryté, dokud nejsou všechna pole plná */
+            padding: 0 20px;
+        }
+        .reset-link {
+            background-color: #e53e3e; /* Červené tlačítko pro reset */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 20px;
+        }
+        .reset-link:hover {
+            background-color: #c53030;
+            transform: translateY(-2px);
+        }
         @media (max-width: 768px) {
             .container {
                 grid-template-columns: repeat(2, 1fr);
                 grid-template-rows: repeat(4, 1fr);
             }
             .number-field {
+                font-size: 2rem;
+            }
+            #congratulations {
                 font-size: 2rem;
             }
         }
@@ -56,6 +86,9 @@
             .number-field {
                 height: 60px;
                 font-size: 1.8rem;
+            }
+            #congratulations {
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -72,20 +105,43 @@
         <div class="number-field" id="field-8"></div>
     </div>
 
+    <div id="congratulations">Gratulujeme! Všechny kódy jsi získal/a!</div>
+    <a href="reset_game.html" class="reset-link" id="resetGameLink" style="display:none;">Resetovat hru pro nového hráče</a>
+
     <script>
+        const NUMBER_OF_FIELDS = 8;
+
+        function resetAllFields() {
+             // Toto je pro resetovací stránku, ale pro jistotu to tu máme
+            localStorage.setItem('escapeRoomNumbers', JSON.stringify(Array(NUMBER_OF_FIELDS).fill(null)));
+            console.log("Všechna pole resetována.");
+        }
+
         window.onload = function() {
-            // Načtení pole čísel z Local Storage
-            let storedNumbers = JSON.parse(localStorage.getItem('escapeRoomNumbers')) || Array(8).fill(null);
+            let storedNumbers = JSON.parse(localStorage.getItem('escapeRoomNumbers')) || Array(NUMBER_OF_FIELDS).fill(null);
             console.log("Načtená čísla pro zobrazení:", storedNumbers);
 
-            // Vyplnění polí na stránce
-            for (let i = 0; i < 8; i++) {
+            let filledCount = 0;
+            for (let i = 0; i < NUMBER_OF_FIELDS; i++) {
                 const fieldId = `field-${i + 1}`;
                 const fieldElement = document.getElementById(fieldId);
                 if (fieldElement) {
-                    // Zobrazí číslo, pokud existuje (není null), jinak prázdné pole
-                    fieldElement.innerText = storedNumbers[i] !== null ? storedNumbers[i] : '';
+                    if (storedNumbers[i] !== null) {
+                        fieldElement.innerText = storedNumbers[i];
+                        filledCount++;
+                    } else {
+                        fieldElement.innerText = ''; // Zajišťuje prázdné pole pro null
+                    }
                 }
+            }
+
+            // Kontrola, zda jsou všechna pole plná
+            if (filledCount === NUMBER_OF_FIELDS) {
+                document.getElementById('congratulations').style.display = 'block';
+                document.getElementById('resetGameLink').style.display = 'block'; // Zobrazí tlačítko pro reset
+            } else {
+                document.getElementById('congratulations').style.display = 'none';
+                document.getElementById('resetGameLink').style.display = 'none';
             }
         };
     </script>

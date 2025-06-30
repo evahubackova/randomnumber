@@ -23,41 +23,38 @@
             overflow-y: hidden; /* Změna: Skrýt vertikální scroll pro body, spoléháme se na iframe */
             padding: 20px 0; /* Přidáme padding, aby obsah nebyl nalepen na okraje */
         }
-        .container {
-            display: grid;
-            /* Agresivnější: Pevné rozměry sloupců, aby se nikam nehlo */
-            grid-template-columns: repeat(4, 150px); /* Příklad: 4 sloupce po 150px */
-            grid-template-rows: repeat(2, 80px);     /* Příklad: 2 řádky po 80px */
-            gap: 20px;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            /* Vypočítaná pevná šířka kontejneru: (4 * 150px šířka) + (3 * 20px mezera) + (2 * 20px padding) */
-            width: calc((4 * 150px) + (3 * 20px) + (2 * 20px)); /* = 600 + 60 + 40 = 700px */
-            /* Pevná výška kontejneru: (2 * 80px výška) + (1 * 20px mezera) + (2 * 20px padding) */
-            height: calc((2 * 80px) + (1 * 20px) + (2 * 20px)); /* = 160 + 20 + 40 = 220px */
-            margin-bottom: 20px;
-            flex-shrink: 0; /* Zabrání zmenšení kontejneru ve flexboxu */
-        }
-        .number-field {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            /* Agresivnější: Pevné rozměry buněk, aby se nemohly roztáhnout */
-            width: 150px; /* Pevná šířka - musí odpovídat šířce sloupce v .container */
-            height: 80px; /* Pevná výška - musí odpovídat výšce řádku v .container */
-            background-color: #e2e8f0;
-            border-radius: 8px;
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #2d3748;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
-            /* Zajištění, že se text nepřeteče a zůstane vycentrován */
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: clip;
-        }
+ .container {
+    display: grid;
+    grid-template-columns: repeat(4, 150px); /* 4 sloupce po 150px */
+    grid-template-rows: repeat(2, 80px);     /* 2 řádky po 80px */
+    gap: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    /* Vypočítaná pevná šířka kontejneru: (4 * 150px šířka) + (3 * 20px mezera) + (2 * 20px padding) */
+    width: calc((4 * 150px) + (3 * 20px) + (2 * 20px)); /* = 600 + 60 + 40 = 700px */
+    /* Pevná výška kontejneru: (2 * 80px výška) + (1 * 20px mezera) + (2 * 20px padding) */
+    height: calc((2 * 80px) + (1 * 20px) + (2 * 20px)); /* = 160 + 20 + 40 = 220px */
+    margin-bottom: 20px;
+    flex-shrink: 0;
+}
+.number-field {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 150px; /* Pevná šířka - musí odpovídat šířce sloupce v .container */
+    height: 80px; /* Pevná výška - musí odpovídat výšce řádku v .container */
+    background-color: #e2e8f0;
+    border-radius: 8px;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #2d3748;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: clip;
+}
         #congratulations {
             font-size: 3rem;
             font-weight: bold;
@@ -84,38 +81,40 @@
             transform: translateY(-2px);
         }
         /* Media Queries - pro mobilní zařízení je také potřeba pevná velikost */
-      @media (max-width: 480px) {
+     @media (max-width: 350px) { /* Změna z 480px na 350px, aby se nespouštělo předčasně */
     .container {
-        grid-template-columns: 1fr;
-        grid-template-rows: repeat(8, 60px);
-        width: 95%; /* Změna: spíše procenta, aby se vešel do velmi malých oken */
-        max-width: 320px; /* Změna: trochu menší max-width pro mobily */
-        margin-left: auto; /* Zajistí centrování */
-        margin-right: auto; /* Zajistí centrování */
+        grid-template-columns: 1fr; /* Jeden sloupec */
+        grid-template-rows: repeat(8, 60px); /* 8 řádků po 60px */
+        width: calc(100% - 40px);
+        max-width: 300px;
+        margin-left: auto;
+        margin-right: auto;
     }
     .number-field {
         height: 60px;
         font-size: 1.8rem;
-        width: auto; /* Necháme to na gridu */
+        width: auto;
+    }
+    #congratulations {
+        font-size: 1.5rem;
     }
 }
-        @media (max-width: 480px) {
-            .container {
-                grid-template-columns: 1fr; /* Jeden sloupec */
-                grid-template-rows: repeat(8, 60px); /* 8 řádků po 60px */
-                width: calc(100% - 40px); /* Šířka na celou šířku obrazovky - padding */
-                max-width: 300px; /* Aby nebylo příliš široké na velkých mobilech */
-                height: calc((8 * 60px) + (7 * 20px) + (2 * 20px)); /* 480 + 140 + 40 = 660px */
-            }
-            .number-field {
-                height: 60px;
-                font-size: 1.8rem;
-                width: auto; /* Automatická šířka, bude se přizpůsobovat kontejneru */
-            }
-            #congratulations {
-                font-size: 1.5rem;
-            }
-        }
+       @media (max-width: 680px) { /* Změna z 768px na 680px */
+    .container {
+        grid-template-columns: repeat(2, 140px); /* 2 sloupce po 140px */
+        grid-template-rows: repeat(4, 70px);    /* 4 řádky po 70px */
+        width: calc((2 * 140px) + (1 * 20px) + (2 * 20px)); /* 280 + 20 + 40 = 340px */
+        height: calc((4 * 70px) + (3 * 20px) + (2 * 20px)); /* 280 + 60 + 40 = 380px */
+    }
+    .number-field {
+        width: 140px;
+        height: 70px;
+        font-size: 2rem;
+    }
+    #congratulations {
+        font-size: 2rem;
+    }
+}
     </style>
 </head>
 <body>

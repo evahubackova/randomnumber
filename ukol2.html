@@ -1,1 +1,103 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Úkol 1 - Získal jsi kód!</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: transparent; /* Pro Genially pozadí */
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            min-height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        h1 {
+            color: #2c5282;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        #gainedCodeDisplay {
+            font-size: 5rem;
+            font-weight: bold;
+            color: #e53e3e; /* Výrazná barva pro kód */
+            padding: 1rem 2rem;
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            min-width: 200px;
+            display: inline-block; /* Aby se stínování přizpůsobilo obsahu */
+        }
+        .action-link {
+            background-color: #4299e1;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-decoration: none; /* Odstranit podtržení u odkazu */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .action-link:hover {
+            background-color: #3182ce;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <h1>Získal jsi kód!</h1>
+    <div id="gainedCodeDisplay"></div>
+    <a href="display.html" class="action-link">Pokračovat k přehledu kódů</a>
 
+    <script>
+        const MIN_VALUE = 1;
+        const MAX_VALUE = 100;
+        const NUMBER_OF_FIELDS = 8; // Celkový počet polí
+
+        // DŮLEŽITÉ: TENTO INDEX ZMĚŇTE PRO KAŽDÝ SOUBOR ÚKOLU!
+        // ukol1.html -> TARGET_SLOT_INDEX = 0
+        // ukol2.html -> TARGET_SLOT_INDEX = 1
+        // ...
+        // ukol8.html -> TARGET_SLOT_INDEX = 7
+        const TARGET_SLOT_INDEX = 1; // <--- ZDE ZMĚŇTE PRO KAŽDÝ ÚKOL!
+
+        function generateRandomNumber(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // Funkce pro inicializaci polí, pokud neexistují nebo jsou špatně
+        function getInitializedFields() {
+            let storedNumbers = JSON.parse(localStorage.getItem('escapeRoomNumbers'));
+            if (!storedNumbers || !Array.isArray(storedNumbers) || storedNumbers.length !== NUMBER_OF_FIELDS) {
+                return Array(NUMBER_OF_FIELDS).fill(null);
+            }
+            return storedNumbers;
+        }
+
+        window.onload = function() {
+            const gainedCodeDisplay = document.getElementById('gainedCodeDisplay');
+            const newCode = generateRandomNumber(MIN_VALUE, MAX_VALUE);
+            gainedCodeDisplay.innerText = newCode; // Zobrazí vygenerované číslo hráči
+
+            let storedNumbers = getInitializedFields();
+
+            // Uloží vygenerované číslo do cílového slotu
+            // Přidáme kontrolu, aby se číslo nepřepisovalo, pokud už tam nějaké je
+            if (storedNumbers[TARGET_SLOT_INDEX] === null || storedNumbers[TARGET_SLOT_INDEX] !== newCode) {
+                 storedNumbers[TARGET_SLOT_INDEX] = newCode;
+                 localStorage.setItem('escapeRoomNumbers', JSON.stringify(storedNumbers));
+                 console.log(`Kód ${newCode} uložen do slotu ${TARGET_SLOT_INDEX}.`);
+            } else {
+                 console.log(`Kód pro slot ${TARGET_SLOT_INDEX} již existuje nebo se vygeneroval stejný. Nic se neměnilo.`);
+            }
+        };
+    </script>
+</body>
+</html>

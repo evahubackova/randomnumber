@@ -37,27 +37,28 @@
             return storedNumbers;
         }
 
-        window.onload = function() {
-            const gainedCodeDisplay = document.getElementById('gainedCodeDisplay');
-            let storedNumbers = getInitializedFields();
+       window.onload = function() {
+    const gainedCodeDisplay = document.getElementById('gainedCodeDisplay');
+    let storedNumbers = getInitializedFields(); // Načte aktuální stav z localStorage
 
-            let newCode;
+    let newCode;
 
-            // Zkontrolujeme, zda už je kód pro tento slot uložen
-            if (storedNumbers[TARGET_SLOT_INDEX] !== null) {
-                // Pokud už kód existuje, zobrazíme stávající kód
-                newCode = storedNumbers[TARGET_SLOT_INDEX];
-                console.log(`Kód pro slot ${TARGET_SLOT_INDEX} (${newCode}) již existuje. Nový kód se negeneruje.`);
-            } else {
-                // Pokud kód neexistuje, vygenerujeme nový a uložíme ho
-                newCode = generateRandomNumber(MIN_VALUE, MAX_VALUE);
-                storedNumbers[TARGET_SLOT_INDEX] = newCode;
-                localStorage.setItem('escapeRoomNumbers', JSON.stringify(storedNumbers));
-                console.log(`Nový kód ${newCode} uložen do slotu ${TARGET_SLOT_INDEX}.`);
-            }
+    // Zkontrolujeme, zda už je kód pro tento konkrétní slot uložen
+    if (storedNumbers[TARGET_SLOT_INDEX] !== null) {
+        // Pokud už kód existuje v localStorage pro tento slot, zobrazíme ho
+        newCode = storedNumbers[TARGET_SLOT_INDEX];
+        console.log(`Kód pro slot ${TARGET_SLOT_INDEX} (${newCode}) již existuje. Nový kód se negeneruje.`);
+    } else {
+        // Pokud je slot prázdný (null), vygenerujeme nový kód a uložíme ho
+        newCode = generateRandomNumber(MIN_VALUE, MAX_VALUE);
+        storedNumbers[TARGET_SLOT_INDEX] = newCode;
+        localStorage.setItem('escapeRoomNumbers', JSON.stringify(storedNumbers));
+        console.log(`Nový kód ${newCode} uložen do slotu ${TARGET_SLOT_INDEX}.`);
+    }
 
-            gainedCodeDisplay.innerText = newCode; // Vždy zobrazí aktuální kód (vygenerovaný nebo ten, co už byl uložen)
-        };
+    // Zobrazí se buď nově vygenerovaný kód, nebo ten, který už byl uložen
+    gainedCodeDisplay.innerText = newCode; 
+};
     </script>
 </body>
 </html>
